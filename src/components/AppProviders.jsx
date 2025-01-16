@@ -12,10 +12,12 @@ import ErrorFallback from "./ErrorFallback";
 function AppProviders({ children }) {
   return (
     <BrowserRouter>
-      <ThemeProvider theme={darkTheme}>
-        <GlobalStyle />
-        {children}
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider theme={darkTheme}>
+          <GlobalStyle />
+          {children}
+        </ThemeProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

@@ -4,7 +4,7 @@ import { signInWithGoogle } from "../utils/supabase";
 
 function GoogleAuth() {
   return (
-    <Button tabIndex={0} type="button">
+    <Button onClick={signInWithGoogle} tabIndex={0} type="button">
       <span className="outer">
         <span className="inner">
           <SignInIcon />
