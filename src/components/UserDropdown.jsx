@@ -5,7 +5,7 @@ import Avatar from "../styles/Avatar";
 import { signOut } from "../utils/supabase";
 import { ChannelIcon, SignoutIcon } from "./Icons";
 
-function UserDropdown() {
+function UserDropdown({ profile }) {
   return (
     <Menu>
       <MenuButton>

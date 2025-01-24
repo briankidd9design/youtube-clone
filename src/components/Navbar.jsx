@@ -8,6 +8,7 @@ import UploadVideo from "./UploadVideo";
 import UserDropdown from "./UserDropdown";
 
 function Navbar({ handleToggleSidebar }) {
+  const profile = useCurrentProfile();
   return (
     <Wrapper>
       <div className="logo flex-row">
@@ -28,12 +29,13 @@ function Navbar({ handleToggleSidebar }) {
       </div>
 
       {/* Search */}
-
+      <Search />
       <ul>
-        <li></li>
-        <li></li>
+        <li>{profile ? <UploadVideo /> : <AppsIcon />}</li>
+        <li>{profile ? <AppsIcon /> : <SettingsIcon />}</li>
         <li>
-          <GoogleAuth />
+          {/* <GoogleAuth /> */}
+          {profile ? <UserDropdown profile={profile} /> : <GoogleAuth />}
         </li>
       </ul>
     </Wrapper>
