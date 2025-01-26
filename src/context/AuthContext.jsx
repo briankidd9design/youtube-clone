@@ -1,5 +1,5 @@
 import React from "react";
-import { supabase } from "../utils/supabase";
+import { supabase, getCurrentProfile } from "../utils/supabase";
 
 // Pass down the users current session
 export const AuthContext = React.createContext(null);
@@ -10,13 +10,23 @@ export function AuthProvider({ children }) {
 
   React.useEffect(() => {
     // get session returns a promise
-    supabase.auth.getSession().then(({ data }) => {
-      console.log("getSession", data.session.user);
-      setProfile(data.session.user);
+    supabase.auth.getSession().then(async ({ data }) => {
+      // console.log("getSession", data.session.user);
+      if (data.session) {
+        const user = data.session.user;
+        const profile = await getCurrentProfile(user.id);
+        // we spread in all of the profile properties as well as the new user into an object. user is going to be it's own property on profile
+        setProfile({ ...profile, user });
+      }
+      // setProfile(data.session.user);
     });
-    supabase.auth.onAuthStateChange((_, session) => {
-      console.log("onAuthStateChange", session);
-      setProfile(session.user);
+    supabase.auth.onAuthStateChange(async (_, session) => {
+      // console.log("onAuthStateChange", session);
+      if (session) {
+        const user = session.user;
+        const profile = await getCurrentProfile(user.id);
+        setProfile({ ...profile, user });
+      }
     });
   }, []);
   return (

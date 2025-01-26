@@ -10,9 +10,23 @@ export function signInWithGoogle() {
   supabase.auth.signInWithOAuth({ provider: "google" });
 }
 
-export function signOut() {}
+export async function signOut() {
+  await supabase.auth.signOut();
+  window.location.reload();
+}
 
-export function getCurrentProfile() {}
+export async function getCurrentProfile(userId) {
+  // profile is the alias of the data
+  const { data: profile } = await supabase
+    .from("profile")
+    .select("*")
+    // check for equality and return a single record
+    // see if the user_id column is eqaul to the userId passed to the function
+    // because we are returning an array, we use the single function to return a single object
+    .eq("user_id", userId)
+    .single();
+  return profile;
+}
 
 export function getVideos() {}
 

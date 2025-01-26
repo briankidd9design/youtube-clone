@@ -6,17 +6,22 @@ import { signOut } from "../utils/supabase";
 import { ChannelIcon, SignoutIcon } from "./Icons";
 
 function UserDropdown({ profile }) {
+  const navigate = useNavigate();
   return (
     <Menu>
       <MenuButton>
-        <Avatar className="pointer" src="" alt={`username avatar`} />
+        <Avatar
+          className="pointer"
+          src={profile.avatar}
+          alt={`${profile.username} avatar`}
+        />
       </MenuButton>
       <MenuList>
-        <MenuItem>
+        <MenuItem onSelect={() => navigate(`/channel/${profile.id}`)}>
           <ChannelIcon />
           <span>Your channel</span>
         </MenuItem>
-        <MenuItem>
+        <MenuItem onSelect={signOut}>
           <SignoutIcon />
           <span>Sign out</span>
         </MenuItem>
