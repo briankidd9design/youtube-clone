@@ -1,8 +1,21 @@
 import { supabase } from "./supabase";
 
-export function uploadThumbnail() {}
+export async function uploadVideo(fileName, file) {
+  await supabase.storage.from("media").upload(fileName, file);
+  const { data } = await supabase.storage.from("media").getPublicUrl(file.name);
+  return data.publicUrl;
+}
 
-export function uploadVideo() {}
+export async function uploadThumbnail(fileName, file) {
+  const cover = await getVideoCover(file, 1.5);
+  await supabase.storage.from("thumbnails").upload(fileName, cover, {
+    contentType: "image/png",
+  });
+  const { data } = await supabase.storage
+    .from("thumbnails")
+    .getPublicUrl(file.name);
+  return data.publicUrl;
+}
 
 function getVideoCover(file, seekTo = 0.0) {
   console.log("getting video cover for file: ", file);

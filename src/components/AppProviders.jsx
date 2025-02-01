@@ -16,6 +16,7 @@ function AppProviders({ children }) {
         <ThemeProvider theme={darkTheme}>
           <GlobalStyle />
           {children}
+          <Toaster />
         </ThemeProvider>
       </AuthProvider>
     </BrowserRouter>
