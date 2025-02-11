@@ -43,6 +43,15 @@ function UploadVideo() {
         onChange={handleVideoUpload}
       />
       {/* UploadVideoModal */}
+      {showModal && (
+        <UploadVideoModal
+          url={url}
+          previewVideo={previewVideo}
+          thumbnail={thumbnail}
+          defaultTitle={defaultTitle}
+          claseModal={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 }
