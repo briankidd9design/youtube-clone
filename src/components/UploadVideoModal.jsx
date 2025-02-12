@@ -16,10 +16,29 @@ function UploadVideoModal({
   defaultTitle,
 }) {
   const [tab, setTab] = React.useState("PREVIEW");
+  const [title, setTitle] = React.useState(defaultTitle);
+  const [description, setDescription] = React.useState("");
+  const profile = useCurrentProfile();
+  const navigate = useNavigate();
+
   async function handleTab() {
     if (tab === "PREVIEW") {
       setTab("FORM");
     } else {
+      if (!title.trim() || !description.trim()) {
+        return toast.error("Please fill in all the fields");
+      }
+      const video = {
+        title,
+        description,
+        url,
+        thumbnail,
+        profile_id: profile?.id,
+      };
+      await addVideo(video);
+      closeModal();
+      toast.success("Video published");
+      navigate(`/channel/${profile?.id}`);
     }
   }
 
@@ -32,7 +51,10 @@ function UploadVideoModal({
             <h3>Video Uploaded!</h3>
           </div>
           <div style={{ display: "block" }}>
-            <Button onClick={handleTab}>Next</Button>
+            {/* <Button onClick={handleTab}>Next</Button> */}
+            <Button onClick={handleTab}>
+              {tab === "PREVIEW" ? "Next" : "Upload"}
+            </Button>
           </div>
         </div>
 
@@ -44,8 +66,16 @@ function UploadVideoModal({
         {tab === "FORM" && (
           <div className="tab video-form">
             <h2>Video Details</h2>
-            <input type="text" placeholder="Enter your video title" value="" />
-            <textarea placeholder="Tell viewers about your video" />
+            <input
+              type="text"
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter your video title"
+              value={title}
+            />
+            <textarea
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Tell viewers about your video"
+            />
           </div>
         )}
       </div>

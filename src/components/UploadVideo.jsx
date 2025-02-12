@@ -49,7 +49,7 @@ function UploadVideo() {
           previewVideo={previewVideo}
           thumbnail={thumbnail}
           defaultTitle={defaultTitle}
-          claseModal={() => setShowModal(false)}
+          closeModal={() => setShowModal(false)}
         />
       )}
     </div>

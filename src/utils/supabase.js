@@ -47,7 +47,9 @@ export function getVideo() {}
 
 export function getVideoLikes() {}
 
-export function addVideo() {}
+export async function addVideo(video) {
+  await supabase.from("video").insert([video]);
+}
 
 export function getChannel() {}
 
