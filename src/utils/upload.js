@@ -13,7 +13,7 @@ export async function uploadThumbnail(fileName, file) {
   });
   const { data } = await supabase.storage
     .from("thumbnails")
-    .getPublicUrl(file.name);
+    .getPublicUrl(fileName);
   return data.publicUrl;
 }
 

@@ -28,7 +28,14 @@ export async function getCurrentProfile(userId) {
   return profile;
 }
 
-export function getVideos() {}
+export async function getVideos() {
+  const { data: videos } = await supabase
+    .from("video")
+    .select("*, profile(*), view(count)")
+    .order("created_at", { ascending: false });
+
+  return videos;
+}
 
 export function getLikedVideos() {}
 
@@ -46,7 +53,7 @@ export function getHistoryVideos() {}
 export function getVideo() {}
 
 export function getVideoLikes() {}
-
+// this adds a video to the database
 export async function addVideo(video) {
   await supabase.from("video").insert([video]);
 }
