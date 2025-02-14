@@ -35,7 +35,7 @@ function VideoCard({ video }) {
             <span>{formatCreatedAt(video.created_at)}</span>
           </p>
         </div>
-        <DeleteVideoDropdown />
+        <DeleteVideoDropdown video={video} />
       </div>
     </Wrapper>
   );

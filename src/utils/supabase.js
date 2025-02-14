@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-// import { queryClient } from "../components/AppProviders";
+import { queryClient } from "../components/AppProviders";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -42,7 +42,15 @@ export function getLikedVideos() {}
 // create function view_count(video) returns bigint as $$
 //   select count(*) from view where video_id = $1.id;
 // $$ stable language sql;
-export function getTrendingVideos() {}
+export async function getTrendingVideos() {
+  const { data: videos } = await supabase
+    .from("video")
+    .select("*, profile(*), view(count)")
+    .order("created_at", { ascending: false })
+    .order("view_count", { ascending: false });
+
+  return videos;
+}
 
 export function getSubscriptionVideos() {}
 
@@ -76,6 +84,11 @@ export function uploadImage() {}
 
 export function updateProfile() {}
 
-export function deleteVideo() {}
+export async function deleteVideo(videoId) {
+  // delete the video if the id is equal to the videoId
+  await supabase.from("video").delete().eq("id", videoId);
+  // invalidate queries means we want to mark it to be requested again
+  await queryClient.invalidateQueries(["Channel"]);
+}
 
 export function deleteComment() {}

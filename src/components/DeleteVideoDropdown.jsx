@@ -5,24 +5,35 @@ import useCurrentProfile from "../hooks/useCurrentProfile";
 import { deleteVideo } from "../utils/supabase";
 import { DeleteIcon, SettingsIcon } from "./Icons";
 
-function DeleteVideoDropdown() {
-  async function handleDeleteVideo() {}
+function DeleteVideoDropdown({ video }) {
+  const navigate = useNavigate();
+  const profile = useCurrentProfile();
+  const profileId = profile?.id;
+  const isVideoAuthor = video.profile_id === profileId;
 
-  return (
-    <div>
-      <Menu>
-        <MenuButton>
-          <SettingsIcon />
-        </MenuButton>
-        <MenuList>
-          <MenuItem onSelect={handleDeleteVideo}>
-            <DeleteIcon />
-            <span>Delete Video</span>
-          </MenuItem>
-        </MenuList>
-      </Menu>
-    </div>
-  );
+  async function handleDeleteVideo() {
+    await deleteVideo(video.id);
+    navigate(`/channel/${profileId}`);
+  }
+
+  if (isVideoAuthor) {
+    return (
+      <div>
+        <Menu>
+          <MenuButton>
+            <SettingsIcon />
+          </MenuButton>
+          <MenuList>
+            <MenuItem onSelect={handleDeleteVideo}>
+              <DeleteIcon />
+              <span>Delete Video</span>
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </div>
+    );
+  }
+  return null;
 }
 
 export default DeleteVideoDropdown;

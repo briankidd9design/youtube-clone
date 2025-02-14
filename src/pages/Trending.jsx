@@ -6,10 +6,26 @@ import Wrapper from "../styles/Trending";
 import { getTrendingVideos } from "../utils/supabase";
 
 function TrendingPage() {
+  const {
+    isLoading,
+    isError,
+    error,
+    data: videos,
+  } = useQuery(["Home"], getTrendingVideos);
+
+  console.log(videos);
+
+  if (isLoading) return <Skeleton />;
+  if (isError) return <ErrorMessage error={error} />;
   return (
     <Wrapper>
       <h2>Trending</h2>
-      <div className="trending">{/* Display Trending Videos */}</div>
+      {/* <div className="trending">Display Trending Videos */}
+      <div className="trending">
+        {videos.map((video) => (
+          <TrendingCard key={video.id} video={video} />
+        ))}
+      </div>
     </Wrapper>
   );
 }

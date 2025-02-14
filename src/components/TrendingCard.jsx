@@ -2,23 +2,23 @@ import { Link } from "react-router-dom";
 import Wrapper from "../styles/TrendingCard";
 import { formatCreatedAt } from "../utils/date";
 
-function TrendingCard() {
+function TrendingCard({ video }) {
   return (
     <Wrapper>
-      <Link to={`/watch/video_id`}>
-        <img className="thumb" src="" alt="" />
+      <Link to={`/watch/${video.id}`}>
+        <img className="thumb" src={video.thumbnail} alt={video.title} />
       </Link>
       <div className="video-info-container">
-        <Link to={`/watch/video_id`}>
-          <h3>title</h3>
+        <Link to={`/watch/${video.id}`}>
+          <h3>{video.title}</h3>
         </Link>
         <p className="secondary">
-          <span>username</span>
+          <span>{video.profile.username}</span>
           <span>•</span>
-          <span>0 views</span>
-          <span>•</span> <span>15 minutes ago</span>
+          <span>{video.view[0].count} views</span>
+          <span>•</span> <span>{formatCreatedAt(video.created_at)}</span>
         </p>
-        <p className="secondary">description...</p>
+        <p className="secondary">{video.description.substr(0, 130)}</p>
       </div>
     </Wrapper>
   );
