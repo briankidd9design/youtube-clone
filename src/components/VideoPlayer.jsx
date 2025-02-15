@@ -11,7 +11,7 @@ function VideoPlayer({ previewUrl, video }) {
     const vjsPlayer = videojs(videoRef.current);
     if (!previewUrl) {
       vjsPlayer.poster(video.thumbnail);
-      vjsPlayer.src(video.url);
+      vjsPlayer.src({ type: "video/mp4", src: video.url });
     }
     if (previewUrl) {
       vjsPlayer.src({ type: "video/mp4", src: previewUrl });

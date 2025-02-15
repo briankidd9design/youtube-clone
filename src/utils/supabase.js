@@ -19,13 +19,16 @@ export async function getCurrentProfile(userId) {
   // profile is the alias of the data
   const { data: profile } = await supabase
     .from("profile")
-    .select("*")
+    .select("*, subscription_subscriber_id_fkey(subscribed_to_id)")
     // check for equality and return a single record
     // see if the user_id column is eqaul to the userId passed to the function
     // because we are returning an array, we use the single function to return a single object
     .eq("user_id", userId)
     .single();
-  return profile;
+  const subscriptions = profile.subscription_subscriber_id_fkey.map(
+    (s) => s.subscribed_to_id
+  );
+  return { ...profile, subscriptions };
 }
 
 export async function getVideos() {
@@ -58,7 +61,20 @@ export function getChannelSuggestions() {}
 
 export function getHistoryVideos() {}
 
-export function getVideo() {}
+export async function getVideo(videoId) {
+  const { data, error } = await supabase
+    .from("video")
+    .select(
+      "*, profile(*, subscription_subscriber_id_fkey(count)), view(count),like(profile_id, type), comment(*,profile(*))"
+    )
+    .eq("id", videoId)
+    .order("created_at", { foreignTable: "comment", ascending: false })
+    .single();
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+}
 
 export function getVideoLikes() {}
 // this adds a video to the database

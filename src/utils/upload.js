@@ -2,7 +2,7 @@ import { supabase } from "./supabase";
 
 export async function uploadVideo(fileName, file) {
   await supabase.storage.from("media").upload(fileName, file);
-  const { data } = await supabase.storage.from("media").getPublicUrl(file.name);
+  const { data } = await supabase.storage.from("media").getPublicUrl(fileName);
   return data.publicUrl;
 }
 

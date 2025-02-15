@@ -7,7 +7,7 @@ import DeleteVideoDropdown from "./DeleteVideoDropdown";
 function VideoCard({ video }) {
   return (
     <Wrapper>
-      <Link to={`/watch/video_id`}>
+      <Link to={`/watch/${video.id}`}>
         <img
           className="thumb"
           src={video.thumbnail}
