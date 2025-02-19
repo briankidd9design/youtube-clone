@@ -76,21 +76,64 @@ export async function getVideo(videoId) {
   return data;
 }
 
-export function getVideoLikes() {}
+export async function getVideoLikes(videoId, profileId) {
+  const { data } = await supabase
+    .from("video")
+    .select("like(profile_id, type)")
+    .eq("id", videoId)
+    .single();
+  const likes = data.like.filter((l) => l.type === "like");
+  const dislikes = data.like.filter((l) => l.type === "dislike");
+  const likeCount = likes.length;
+  const dislikeCount = dislikes.length;
+  const isLiked = likes.some((l) => l.profile_id === profileId);
+  const isDisliked = dislikes.some((l) => l.profile_id === profileId);
+  return { likeCount, dislikeCount, isLiked, isDisliked };
+}
 // this adds a video to the database
 export async function addVideo(video) {
   await supabase.from("video").insert([video]);
 }
 
 export function getChannel() {}
-
-export function addVideoView() {}
+// This will add view views to the UI
+export async function addVideoView(view) {
+  return await supabase.from("view").insert([view]);
+}
 
 export function addComment() {}
 
 export function searchVideosAndProfiles() {}
 
-export function likeVideo() {}
+export async function likeVideo(profile, videoId) {
+  const { data: likes } = await supabase
+    .from("like")
+    .select("id, profile_id, type")
+    .eq("profile_id", profile.id)
+    .eq("video_id", videoId);
+  const like = likes[0];
+  const isLiked = like && like.type === "like";
+  const isDisliked = like && like.type === "dislike";
+
+  if (isLiked) {
+    // delete like
+    await supabase.from("like").delete().eq("id", like.id);
+  } else if (isDisliked) {
+    // change it to a like
+    await supabase.from("like").update({ type: "dislike" }).eq("id", like.id);
+  } else {
+    // add like
+    await supabase.from("like").insert([
+      {
+        profile_id: profile.id,
+        video_id: videoId,
+        user_id: profile.user_id,
+        type: "like",
+      },
+    ]);
+  }
+  await queryClient.invalidateQueries(["WatchVideo", "Likes"]);
+}
 
 export function dislikeVideo() {}
 

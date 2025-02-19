@@ -3,9 +3,20 @@ import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import useCurrentProfile from "../hooks/useCurrentProfile";
 import { addVideoView } from "../utils/supabase";
+import { useQuery } from "@tanstack/react-query";
 
 function VideoPlayer({ previewUrl, video }) {
   const videoRef = React.useRef(null);
+  const profile = useCurrentProfile();
+  const profileId = profile?.id;
+
+  useQuery(["View"], () => {
+    const view = {
+      profile_id: profileId,
+      video_id: video?.id,
+    };
+    return addVideoView(view);
+  });
   React.useEffect(() => {
     // we can set the source and the poster
     const vjsPlayer = videojs(videoRef.current);

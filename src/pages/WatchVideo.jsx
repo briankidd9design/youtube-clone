@@ -4,17 +4,17 @@ import CommentList from "../components/AddComment";
 import { DislikeIcon, LikeIcon } from "../components/Icons";
 import NoResults from "../components/NoResults";
 import SubscribeButton from "../components/SubscribeButton";
-import VideoCard from "../components/VideoCard";
+// import VideoCard from "../components/VideoCard";
 import VideoPlayer from "../components/VideoPlayer";
 import useCurrentProfile from "../hooks/useCurrentProfile";
 import Skeleton from "../skeletons/WatchVideoSkeleton";
 import Wrapper from "../styles/WatchVideo";
 import { formatCreatedAt } from "../utils/date";
 import {
-  dislikeVideo,
+  // dislikeVideo,
   getVideo,
   getVideoLikes,
-  getVideos,
+  // getVideos,
   likeVideo,
   signInWithGoogle,
 } from "../utils/supabase";
@@ -24,29 +24,38 @@ function WatchVideoPage() {
   const profile = useCurrentProfile();
   const profileId = profile?.id;
 
-  const {
-    isLoading,
-    isLoadingVideo,
-    data: video,
-  } = useQuery(["WatchVideo", videoId], () => getVideo(videoId));
-  if (isLoadingVideo) return <Skeleton />;
+  const { isLoading: isLoadingVideo, data: video } = useQuery(
+    ["WatchVideo", videoId],
+    () => getVideo(videoId)
+  );
+  const { isLoading: isLoadingLikes, data: likes } = useQuery(
+    ["WatchVideo", "Likes", videoId, profileId],
+    () => getVideoLikes(videoId, profileId)
+  );
+
+  // console.log(data);
+  function handleLikeVideo() {
+    if (!profile) {
+      signInWithGoogle();
+    } else {
+      likeVideo(profile, videoId);
+    }
+  }
+
+  function handleDislikeVideo() {}
+  // Does this video belong to the current user
+  if (isLoadingVideo || isLoadingLikes) return <Skeleton />;
   if (!video) {
     return (
       <NoResults
         title="Page not found"
-        text="The page you are looking for is not found or it may have been removed"
+        text="The page you are looking is not found or it may have been removed"
       />
     );
   }
-
-  // console.log(data);
-  function handleLikeVideo() {}
-
-  function handleDislikeVideo() {}
-  // Does this video belong to the current user
   const isVideoMine = video.profile.id === profileId;
   return (
-    <Wrapper filledLike={false} filledDislike={false}>
+    <Wrapper filledLike={likes.isLiked} filledDislike={likes.isDisliked}>
       <div className="video-container">
         <div className="video">
           {!isLoadingVideo && <VideoPlayer video={video} />}
@@ -65,10 +74,12 @@ function WatchVideoPage() {
 
             <div className="likes-dislikes flex-row">
               <p className="flex-row like">
-                <LikeIcon onClick={handleLikeVideo} /> <span>{0}</span>
+                <LikeIcon onClick={handleLikeVideo} />{" "}
+                <span>{likes.likeCount}</span>
               </p>
               <p className="flex-row dislike" style={{ marginLeft: "1rem" }}>
-                <DislikeIcon onClick={handleDislikeVideo} /> <span>{0}</span>
+                <DislikeIcon onClick={handleDislikeVideo} />{" "}
+                <span>{likes.dislikeCount}</span>
               </p>
             </div>
           </div>
