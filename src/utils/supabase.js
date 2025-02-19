@@ -135,7 +135,35 @@ export async function likeVideo(profile, videoId) {
   await queryClient.invalidateQueries(["WatchVideo", "Likes"]);
 }
 
-export function dislikeVideo() {}
+export async function dislikeVideo(profile, videoId) {
+  const { data: likes } = await supabase
+    .from("like")
+    .select("id, profile_id, type")
+    .eq("profile_id", profile.id)
+    .eq("video_id", videoId);
+  const like = likes[0];
+  const isLiked = like && like.type === "like";
+  const isDisliked = like && like.type === "dislike";
+
+  if (isDisliked) {
+    // delete like
+    await supabase.from("like").delete().eq("id", like.id);
+  } else if (isLiked) {
+    // change it to a like
+    await supabase.from("like").update({ type: "like" }).eq("id", like.id);
+  } else {
+    // add like
+    await supabase.from("like").insert([
+      {
+        profile_id: profile.id,
+        video_id: videoId,
+        user_id: profile.user_id,
+        type: "dislike",
+      },
+    ]);
+  }
+  await queryClient.invalidateQueries(["WatchVideo", "Likes"]);
+}
 
 export function toggleSubscribeUser() {}
 

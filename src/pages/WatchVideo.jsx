@@ -11,7 +11,7 @@ import Skeleton from "../skeletons/WatchVideoSkeleton";
 import Wrapper from "../styles/WatchVideo";
 import { formatCreatedAt } from "../utils/date";
 import {
-  // dislikeVideo,
+  dislikeVideo,
   getVideo,
   getVideoLikes,
   // getVideos,
@@ -42,7 +42,13 @@ function WatchVideoPage() {
     }
   }
 
-  function handleDislikeVideo() {}
+  function handleDislikeVideo() {
+    if (!profile) {
+      signInWithGoogle();
+    } else {
+      dislikeVideo(profile, videoId);
+    }
+  }
   // Does this video belong to the current user
   if (isLoadingVideo || isLoadingLikes) return <Skeleton />;
   if (!video) {
