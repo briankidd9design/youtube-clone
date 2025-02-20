@@ -54,10 +54,26 @@ export async function getTrendingVideos() {
 
   return videos;
 }
+// get all the subscriptions for each individual user
+export async function getSubscriptionVideos(profileSubs) {
+  const { data: videos } = await supabase
+    .from("video")
+    .select("*, profile(*), view(count)")
+    .order("created_at", { ascending: false })
+    .filter("profile_id", "in", `(${profileSubs})`);
+  // example
+  // if the profile id is [4] we want to make sure it is in the array of users
+  return videos;
+}
 
-export function getSubscriptionVideos() {}
-
-export function getChannelSuggestions() {}
+export async function getChannelSuggestions(profileId) {
+  const { data } = await supabase
+    .from("profile")
+    .select("*, subscription_subscribed_to_id_fkey(count), video(count)")
+    .neq("id", profileId)
+    .limit(10);
+  return data;
+}
 
 export function getHistoryVideos() {}
 

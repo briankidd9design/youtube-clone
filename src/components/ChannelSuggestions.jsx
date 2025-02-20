@@ -7,10 +7,21 @@ import ChannelInfo from "./ChannelInfo";
 import ErrorMessage from "./ErrorMessage";
 
 function ChannelSuggestions() {
+  const profile = useCurrentProfile();
+  const profileId = profile?.id;
+  const { isLoading, isError, error, data } = useQuery(["Channels"], () =>
+    getChannelSuggestions(profileId)
+  );
+  console.log(data);
+  if (isLoading) return <Skeleton />;
+  if (isError) return <ErrorMessage error={error} />;
+
   return (
     <Wrapper>
       <h2>Suggestions For You</h2>
-      {/* ChannelInfo */}
+      {data.map((channel) => (
+        <ChannelInfo key={channel.id} channel={channel} />
+      ))}
     </Wrapper>
   );
 }

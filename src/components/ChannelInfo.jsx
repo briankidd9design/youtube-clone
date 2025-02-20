@@ -3,20 +3,25 @@ import useCurrentProfile from "../hooks/useCurrentProfile";
 import Wrapper from "../styles/ChannelInfo";
 import SubscribeButton from "./SubscribeButton";
 
-function ChannelInfo() {
+function ChannelInfo({ channel }) {
+  const profile = useCurrentProfile();
+  const isMe = channel.id === profile?.id;
   return (
     <Wrapper>
-      <Link to={`/channel/channel_id`} className="avatar-channel">
-        <img src="" alt="avatar" />
+      <Link to={`/channel/${channel.id}`} className="avatar-channel">
+        <img src={channel.avatar} alt="avatar" />
         <div className="channel-info-meta">
-          <h3>username</h3>
+          <h3>{channel.username}</h3>
           <p className="secondary">
-            <span>0 subscribers</span> <span className="to-hide">•</span>{" "}
-            <span className="to-hide">0 videos</span>
+            <span>
+              {channel.subscription_subscribed_to_id_fkey[0].count} subscribers
+            </span>{" "}
+            <span className="to-hide">•</span>{" "}
+            <span className="to-hide">{channel.video[0].count} videos</span>
           </p>
         </div>
       </Link>
-      {/* SubscribeButton */}
+      {!isMe && <SubscribeButton subscribedToId={channel.id} />}
     </Wrapper>
   );
 }

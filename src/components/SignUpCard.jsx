@@ -1,14 +1,13 @@
-import React from "react";
 import Wrapper from "../styles/SignUpCard";
 import GoogleAuth from "./GoogleAuth";
 
-function SignUpCard() {
+function SignUpCard({ icon, title, description }) {
   return (
     <Wrapper>
-      icon
+      {icon}
       <div>
-        <h1>title</h1>
-        <p>description</p>
+        <h1>{title}</h1>
+        <p>{description}</p>
         <br />
         <GoogleAuth />
       </div>
