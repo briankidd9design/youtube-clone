@@ -165,7 +165,38 @@ export async function dislikeVideo(profile, videoId) {
   await queryClient.invalidateQueries(["WatchVideo", "Likes"]);
 }
 
-export function toggleSubscribeUser() {}
+export async function toggleSubscribeUser(profile, subscribedToId) {
+  // check to make sure the subscriberId is equal to the profileId
+  // Check to see if the subscribed_to_id is equal to the value that was received in the function
+  const { data } = await supabase
+    .from("subscription")
+    .select("*")
+    .eq("subscriber_id", profile.id)
+    .eq("subscribed_to_id", subscribedToId)
+    .maybeSingle();
+  if (data) {
+    // if we have a subscription, we want to delete it
+    await supabase
+      .from("subscription")
+      .delete()
+      .eq("subscriber_id", profile.id)
+      .eq("subscribed_to_id", subscribedToId);
+  } else {
+    const subscription = {
+      subscriber_id: profile.id,
+      subscribed_to_id: subscribedToId,
+      user_id: profile.user_id,
+    };
+    await supabase.from("subscription").insert([subscription]);
+  }
+  //InvalidateQueries is when you have a query that is set with a long staleTime so that when the user goes to whichever page to fetch the data, it will fetch fresh data, not cached.
+
+  await queryClient.invalidateQueries(["WatchVideo"]);
+  await queryClient.invalidateQueries(["Channel"]);
+  await queryClient.invalidateQueries(["Channels"]);
+  await queryClient.invalidateQueries(["Subscriptions"]);
+  await queryClient.invalidateQueries(["SearchResults"]);
+}
 
 export function uploadImage() {}
 

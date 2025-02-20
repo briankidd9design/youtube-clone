@@ -112,6 +112,7 @@ function WatchVideoPage() {
               </div>
             </div>
             {/* SubscribeButton */}
+            {/* this will determine if the logged in user's video is theirs. The id is the user that uploaded the video. */}
             {!isVideoMine && (
               <SubscribeButton subscribedToId={video?.profile?.id} />
             )}
