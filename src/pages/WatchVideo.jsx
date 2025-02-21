@@ -4,7 +4,6 @@ import CommentList from "../components/AddComment";
 import { DislikeIcon, LikeIcon } from "../components/Icons";
 import NoResults from "../components/NoResults";
 import SubscribeButton from "../components/SubscribeButton";
-// import VideoCard from "../components/VideoCard";
 import VideoPlayer from "../components/VideoPlayer";
 import useCurrentProfile from "../hooks/useCurrentProfile";
 import Skeleton from "../skeletons/WatchVideoSkeleton";
@@ -14,10 +13,11 @@ import {
   dislikeVideo,
   getVideo,
   getVideoLikes,
-  // getVideos,
+  getVideos,
   likeVideo,
   signInWithGoogle,
 } from "../utils/supabase";
+import VideoCard from "../components/VideoCard";
 
 function WatchVideoPage() {
   const { videoId } = useParams();
@@ -31,6 +31,10 @@ function WatchVideoPage() {
   const { isLoading: isLoadingLikes, data: likes } = useQuery(
     ["WatchVideo", "Likes", videoId, profileId],
     () => getVideoLikes(videoId, profileId)
+  );
+  const { isLoading: isLoadingVideos, data: videos } = useQuery(
+    ["WatchVideo", "Up Next"],
+    () => getVideos()
   );
 
   // console.log(data);
@@ -50,7 +54,7 @@ function WatchVideoPage() {
     }
   }
   // Does this video belong to the current user
-  if (isLoadingVideo || isLoadingLikes) return <Skeleton />;
+  if (isLoadingVideo || isLoadingLikes || isLoadingVideos) return <Skeleton />;
   if (!video) {
     return (
       <NoResults
@@ -127,7 +131,15 @@ function WatchVideoPage() {
 
       <div className="related-videos">
         <h3 className="up-next">Up Next</h3>
-        {/* More Videos */}
+        {/* we only want to return the first 20 videos */}
+        {videos
+          // and number is being
+          // as part of react-router, useParams() Returns an object of key/value pairs of the dynamic params from the current URL that were matched by the route path. We are using useParams() ofr videoId. Also, the param of videoId is a string type and the video.id is a number. Ergo, we cannot use the strict equality !== for the filter and must use the != comparison operator
+          .filter((video) => video.id != videoId)
+          .slice(0, 20)
+          .map((video) => (
+            <VideoCard hideAvatar key={video.id} video={video} />
+          ))}
       </div>
     </Wrapper>
   );
