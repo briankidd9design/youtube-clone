@@ -134,7 +134,7 @@ function WatchVideoPage() {
         {/* we only want to return the first 20 videos */}
         {videos
           // and number is being
-          // as part of react-router, useParams() Returns an object of key/value pairs of the dynamic params from the current URL that were matched by the route path. We are using useParams() ofr videoId. Also, the param of videoId is a string type and the video.id is a number. Ergo, we cannot use the strict equality !== for the filter and must use the != comparison operator
+          // as part of react-router, useParams() Returns an object of key/value pairs of the dynamic params from the current URL that were matched by the route path. We are using useParams() ofr videoId. Also, the param of videoId coming from the url is a string type and the video.id is a number. Ergo, we cannot use the strict equality !== for the filter and must use the != comparison operator
           .filter((video) => video.id != videoId)
           .slice(0, 20)
           .map((video) => (
