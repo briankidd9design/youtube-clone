@@ -13,8 +13,6 @@ function TrendingPage() {
     data: videos,
   } = useQuery(["Home"], getTrendingVideos);
 
-  console.log(videos);
-
   if (isLoading) return <Skeleton />;
   if (isError) return <ErrorMessage error={error} />;
   return (

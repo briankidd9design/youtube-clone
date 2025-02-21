@@ -117,7 +117,10 @@ export async function addVideoView(view) {
   return await supabase.from("view").insert([view]);
 }
 
-export function addComment() {}
+export async function addComment(comment) {
+  await supabase.from("comment").insert([comment]);
+  await queryClient.invalidateQueries(["WatchVideo"]);
+}
 
 export function searchVideosAndProfiles() {}
 

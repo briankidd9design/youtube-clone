@@ -18,8 +18,6 @@ function Home() {
     data: videos,
   } = useQuery(["Home"], getVideos);
 
-  console.log(videos);
-
   if (isLoading) return <Skeleton />;
   if (isError) return <ErrorMessage error={error} />;
   return (
