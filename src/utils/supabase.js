@@ -140,7 +140,19 @@ export async function addComment(comment) {
   await queryClient.invalidateQueries(["WatchVideo"]);
 }
 
-export function searchVideosAndProfiles() {}
+export async function searchVideosAndProfiles(searchQuery) {
+  const { data: videos } = await supabase
+    .from("video")
+    .select("*, profile(*), view(count)")
+    // if the title is like the search query that is typed in,
+    // the % sign makes it so the search query is not case sensitive
+    .ilike("title", `%${searchQuery}%`);
+  const { data: profiles } = await supabase
+    .from("profile")
+    .select("*, subscription_subscribed_to_id_fkey(count), video(count)")
+    .ilike("username", `%${searchQuery}%`);
+  return { videos, profiles };
+}
 
 export async function likeVideo(profile, videoId) {
   const { data: likes } = await supabase
