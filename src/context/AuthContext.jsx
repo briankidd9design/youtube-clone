@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
       if (data.session) {
         const user = data.session.user;
         const profile = await getCurrentProfile(user.id);
-        // we spread in all of the profile properties as well as the new user into an object. user is going to be it's own property on profile
+        // we spread in all of the profile properties as well as the new user into an object. user is going to be its own property on profile
         setProfile({ ...profile, user });
       }
       // setProfile(data.session.user);

@@ -40,7 +40,14 @@ export async function getVideos() {
   return videos;
 }
 
-export function getLikedVideos() {}
+export async function getLikedVideos(profileId) {
+  const { data: likes } = await supabase
+    .from("like")
+    .select("*, video(*, view(count), profile(*))")
+    // the profile_id is equal to the profileId that we are passing to the function
+    .eq("profile_id", profileId);
+  return likes.map((l) => l.video);
+}
 
 // create function view_count(video) returns bigint as $$
 //   select count(*) from view where video_id = $1.id;
