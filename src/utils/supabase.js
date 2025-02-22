@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { queryClient } from "../components/AppProviders";
+import uniqBy from "lodash.uniqby";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -82,7 +83,17 @@ export async function getChannelSuggestions(profileId) {
   return data;
 }
 
-export function getHistoryVideos() {}
+export async function getHistoryVideos(profileId) {
+  // go to the view table and select the foreign key videos and then select all the columns from the video table
+  const { data: views } = await supabase
+    .from("view")
+    .select("*, video(*, profile(*), view(count))")
+    .eq("profile_id", profileId);
+  return uniqBy(
+    views.map((view) => view.video),
+    "id"
+  );
+}
 
 export async function getVideo(videoId) {
   const { data, error } = await supabase

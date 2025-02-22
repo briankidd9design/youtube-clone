@@ -11,7 +11,8 @@ export function AuthProvider({ children }) {
   React.useEffect(() => {
     // get session returns a promise
     supabase.auth.getSession().then(async ({ data }) => {
-      // console.log("getSession", data.session.user);
+      // get session is a supabase function
+      console.log("getSession", data.session.user);
       if (data.session) {
         const user = data.session.user;
         const profile = await getCurrentProfile(user.id);
