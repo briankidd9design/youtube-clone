@@ -128,8 +128,24 @@ export async function getVideoLikes(videoId, profileId) {
 export async function addVideo(video) {
   await supabase.from("video").insert([video]);
 }
-
-export function getChannel() {}
+// get all the channels a particular user is subscribed to and all of that user's subscribers
+export async function getChannel(profileId) {
+  const { data } = await supabase
+    .from("profile")
+    .select(
+      "*, video(*, view(count)), subscription_subscriber_id_fkey(*, profile!subscription_subscribed_to_id_fkey(*)), subscription_subscribed_to_id_fkey(*, profile!subscription_subscribed_to_id_fkey(*))"
+    )
+    .eq("id", profileId)
+    // we want to get a single row and not an array of records single();
+    .single();
+  const subscribers = data.subscription_subscriber_id_fkey;
+  const subscriptions = data.subscription_subscribed_to_id_fkey;
+  const subscriberCount = subscriptions.length;
+  // we are changing the foreign keys to be called subscribers and subscriptions instead of the names in the database below. And we will delete those names from the data and use the more readable names subscribers and subscriptions for our data
+  delete data.subscriptions_subscriber_id_fkey;
+  delete data.subscription_subscribed_to_id_fkey;
+  return { ...data, subscriptions, subscribers, subscriberCount };
+}
 // This will add view views to the UI
 export async function addVideoView(view) {
   return await supabase.from("view").insert([view]);
