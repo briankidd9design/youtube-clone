@@ -36,6 +36,7 @@ function Channel() {
       enabled: !!currentChannelId,
     }
   );
+
   if (!profile) {
     return (
       <SignUpCard
@@ -47,7 +48,7 @@ function Channel() {
   }
   if (isLoading) return <Skeleton />;
   if (isError) return <ErrorMessage error={error} />;
-
+  // this will check if the person logged in is looking at his or her own profile
   const isMe = profile?.id === data?.id;
 
   return (
@@ -105,10 +106,10 @@ function Channel() {
         {tab === "VIDEOS" && <ChannelTabVideo videos={data.video} />}
         {/* ChannelTabChannels */}
         {tab === "CHANNELS" && (
-          <ChannelTabChannels videos={data.subscriptions} />
+          <ChannelTabChannels channels={data.subscribers} />
         )}
         {/* ChannelTabAbout */}
-        {tab === "ABOUT" && <ChannelTabAbout videos={data.about} />}
+        {tab === "ABOUT" && <ChannelTabAbout about={data.about} />}
       </div>
     </Wrapper>
   );

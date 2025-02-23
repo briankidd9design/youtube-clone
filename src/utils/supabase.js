@@ -142,7 +142,7 @@ export async function getChannel(profileId) {
   const subscriptions = data.subscription_subscribed_to_id_fkey;
   const subscriberCount = subscriptions.length;
   // we are changing the foreign keys to be called subscribers and subscriptions instead of the names in the database below. And we will delete those names from the data and use the more readable names subscribers and subscriptions for our data
-  delete data.subscriptions_subscriber_id_fkey;
+  delete data.subscription_subscriber_id_fkey;
   delete data.subscription_subscribed_to_id_fkey;
   return { ...data, subscriptions, subscribers, subscriberCount };
 }
