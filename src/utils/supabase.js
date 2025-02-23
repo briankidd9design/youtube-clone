@@ -263,9 +263,18 @@ export async function toggleSubscribeUser(profile, subscribedToId) {
   await queryClient.invalidateQueries(["SearchResults"]);
 }
 
-export function uploadImage() {}
+export async function uploadImage(file) {
+  await supabase.storage.from("images").upload(file.name, file);
+  const { data } = await supabase.storage
+    .from("images")
+    .getPublicUrl(file.name);
+  return data.publicUrl;
+}
 
-export function updateProfile() {}
+export async function updateProfile(profile) {
+  await supabase.from("profile").update(profile).eq("id", profile.id);
+  await queryClient.invalidateQueries(["Channel"]);
+}
 
 export async function deleteVideo(videoId) {
   // delete the video if the id is equal to the videoId
