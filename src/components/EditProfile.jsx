@@ -9,12 +9,14 @@ function EditProfile({ profile }) {
     <>
       <Wrapper>
         <div>
+          {/* when we click on this button we want the modal to open so that we can edit the profile within the modal */}
           <Button onClick={() => setShowModal(true)} grey>
             Edit Profile
           </Button>
         </div>
       </Wrapper>
       {/* EditProfileModal */}
+      {/* if showModal is true, then show this component */}
       {showModal && (
         <EditProfileModal
           profile={profile}
